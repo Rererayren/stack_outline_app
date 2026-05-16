@@ -15,12 +15,13 @@ class climber(db.Model):
 class route(db.Model):
     route_id = db.Column(db.Integer, primary_key=True)  
     route_name = db.Column(db.String(120), nullable=False)
-    grade_id = db.Column(db.String(20),  db.ForeignKey("grade.grade_id"), nullable=False)
+    grade_id = db.Column(db.Integer,  db.ForeignKey("grade.grade_id"), nullable=False)
     location_id = db.Column(db.Integer, db.ForeignKey("location.location_id"), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     grade = db.relationship("grade", back_populates="routes")
     location = db.relationship("location", back_populates="routes")
-    
+    sends = db.relationship("send", back_populates="route")
+
     def __repr__(self):
         return f"<Route {self.route_name}>"
     

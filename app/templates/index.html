@@ -1,25 +1,113 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  p, h1, h2, h3, form {
+    font-family: arial, sans-serif
+  }
+  th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 5px;
+    background-color: #dddddd
+  }
 
-{% block title %}Home | Stack Outline App{% endblock %}
+ 
+</style>
+    <meta charset="UTF-8">
+    <title>Climbing Tracker</title>
+</head>
+<body>
 
-{% block content %}
-<section class="mb-4">
-  <h1 class="h3">Flask + SQLAlchemy + Jinja2 Starter</h1>
-  <p class="text-muted mb-0">
-    This page demonstrates a minimal HTML5/CSS3 frontend with Bootstrap and server-side rendering.
-  </p>
-</section>
+    <h1>Climbing Tracker</h1>
+   	<hr>
+    <hr>
+	<h3>Register New Climbers:</h3>
+    <form action="{{ url_for('main.create_climber') }}" method="POST">
+        <input type="text" name="full_name" placeholder="Full Name" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <button type="submit">Submit</button>
+    </form>
+	<hr>
+    <h2>New Climbing Send</h2>
+    <p><b>Send:</b> When a climber fully completes a new route.</p>
+    <form action="{{ url_for('main.trackSend') }}" method="POST">
+        <li><label><b>Climber:</b></label>
+        <select name="climber_id" required>
+            {% for c in climbers %}
+                <option value="{{ c.climber_id }}">{{ c.full_name }}</option>
+            {% endfor %}
+        </select></li>
 
-<section>
-  <h2 class="h5">Tables</h2>
-  {% if records %}
-    <ul class="list-group">
-      {% for record in records %}
-        <li class="list-group-item">{{ record.title }}</li>
-      {% endfor %}
+       <li><label><b>Route:</b></label>
+        <select name="route_id" required>
+            {% for r in routes %}
+                <option value="{{ r.route_id }}">{{ r.route_name }} [{{ r.grade.grade_name }}]</option>
+            {% endfor %}
+        </select></li>
+        <br>
+	<button type="submit">Submit</button>
+    </form>
+
+    <hr>
+
+    <h2>Send Table</h2>
+
+    {% if sends %}
+        <table border="1" cellpadding="3">
+            <thead>
+                <tr>
+                    <th>Climber</th>
+                    <th>Route Name</th>
+                    <th>Grade</th>
+                    <th>Location</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in sends %}
+                    <tr>
+                        <td><b>{{ s.climber.full_name }}</b></td>
+                        <td>{{ s.route.route_name }}</td>
+                        <td>{{ s.route.grade.grade_name }}</td>
+                        <td>{{ s.route.location.location_name }}, {{ s.route.location.state }}</td>
+                        <td>
+                            <form action="{{ url_for('main.delete_send', send_id=s.send_id) }}" method="POST">
+                                <button type="submit" onclick="return confirm('Delete record from send?');">Submit</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>empty</p>
+    {% endif %}
+
+    <hr>
+
+    <h3>Climbers</h3>
+    <ul>
+        {% for c in climbers %}
+            <li>{{ c.full_name }} — ({{ c.email }})</li>
+        {% endfor %}
     </ul>
-  {% else %}
-    <div class="alert alert-info mb-0">No records yet. Add some through the Flask shell or extend routes with a form/API.</div>
-  {% endif %}
-</section>
-{% endblock %}
+
+    <h3>Routes</h3>
+    <ul>
+        {% for r in routes %}
+            <li>
+                <b>{{ r.route_name }}</b> 
+                [Difficulty: {{ r.grade.grade_name }}] 
+                @ {{ r.location.location_name }}, {{ r.location.state }}
+            </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

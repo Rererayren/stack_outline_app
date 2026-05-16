@@ -6,7 +6,8 @@ from sqlalchemy import func
 
 main = Blueprint("main", __name__)
 
-
+# https://www.slingacademy.com/article/how-to-count-rows-in-sqlalchemy/#basic-count-with-sqlalchemy
+#referenced site for examples on functions in sqlalchemy
 @main.route("/")
 def index():
     # records = ExampleRecord.query.order_by(ExampleRecord.id.desc()).all()
@@ -37,7 +38,7 @@ def create_climber():
         print("email format is invalid")
         return redirect(url_for("main.index"))
     
-    try:
+    try: #https://www.slingacademy.com/article/sqlalchemy-how-to-update-a-record-by-id/
         unique = climber.query.filter_by(email=email_input).first()
         if unique:
             print("Email address already exists.")
@@ -93,3 +94,4 @@ def delete_send(send_id):
         print(f"Failed to remove: {e}")
         
     return redirect(url_for("main.index"))
+

@@ -1,8 +1,10 @@
 Question 1 Gemini: How can I submit user information to a database with HTML5, explain why and how step by step this works in SQL Academy Python Applications
+
 Question 2 Gemini: How to insert information in the database tables I have created at runtime of the app with sql academy
 
-Question 3 Gemini: What are the basics of CRUD Applications seen in SQLAlchemy and Python along with relationships between tables?
+Question 3 Gemini: What are the basics of CRUD Applications seen in SQLAlchemy and Python along with relationships between tables? 
 
+https://www.slingacademy.com
 ---
 
 ### 3. Defining the Models with Relationships

@@ -61,9 +61,9 @@
         <br>
 	<button type="submit">Submit</button>
     </form>
-
+    
     <hr>
-
+    
     <h2>Send Table</h2>
 
     {% if sends %}
@@ -100,12 +100,24 @@
     {% endif %}
 
     <hr>
-
+        
     <h3>Climbers</h3>
     <ul>
         {% for c in climbers %}
-            <li>{{ c.full_name }} - {{ c.email }} - Joined: {{ c.join_date.strftime('%Y-%m-%d') }} - Recent Activity: {{ c.recent_activity.strftime('%Y-%m-%d') }}</li>
-            
+            <li>{{ c.full_name }} - {{ c.email }} - Joined: {{ c.join_date.strftime('%Y-%m-%d') }} - Recent Activity: {{ c.recent_activity.strftime('%Y-%m-%d') }} - <b>{{ c.sends|length }} sends</b></li>
+            {% if c.sends %}
+                <ul>  {% for send in c.sends %}
+                        <li>
+                            Route: {{ send.route.route_name }} [{{ send.route.grade.grade_name }}] in {{ send.route.location.location_name }} on {{ send.send_date.strftime('%Y-%m-%d') }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+            <ul>
+                <li>no routes yet</li>
+            </ul>
+            {% endif %}
+        </li> 
         {% endfor %}
     </ul>
 

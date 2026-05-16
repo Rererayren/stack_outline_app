@@ -27,6 +27,14 @@
     <h1>Climbing Tracker</h1>
    	<hr>
     <hr>
+    <h3>Metrics</h3>
+    <p>
+        <b>Table Counts:</b> 
+        Total Climbers: {{ totalClimbers }} | 
+        Available Routes: {{ totalRoutes }} | 
+        Total Logged Sends: {{ totalSends }}
+    </p>
+    <hr>
 	<h3>Register New Climbers:</h3>
     <form action="{{ url_for('main.create_climber') }}" method="POST">
         <input type="text" name="full_name" placeholder="Full Name" required>
@@ -66,6 +74,7 @@
                     <th>Route Name</th>
                     <th>Grade</th>
                     <th>Location</th>
+                    <th>Entry Date</th>
                     <th>Delete</th>
                 </tr>
             </thead>
@@ -76,6 +85,7 @@
                         <td>{{ s.route.route_name }}</td>
                         <td>{{ s.route.grade.grade_name }}</td>
                         <td>{{ s.route.location.location_name }}, {{ s.route.location.state }}</td>
+                        <td>{{ s.entry_date.strftime('%Y-%m-%d') }}</td>
                         <td>
                             <form action="{{ url_for('main.delete_send', send_id=s.send_id) }}" method="POST">
                                 <button type="submit" onclick="return confirm('Delete record from send?');">Submit</button>
@@ -94,7 +104,8 @@
     <h3>Climbers</h3>
     <ul>
         {% for c in climbers %}
-            <li>{{ c.full_name }} — ({{ c.email }})</li>
+            <li>{{ c.full_name }} - {{ c.email }} - Joined: {{ c.join_date.strftime('%Y-%m-%d') }} - Recent Activity: {{ c.recent_activity.strftime('%Y-%m-%d') }}</li>
+            
         {% endfor %}
     </ul>
 
@@ -102,9 +113,8 @@
     <ul>
         {% for r in routes %}
             <li>
-                <b>{{ r.route_name }}</b> 
-                [Difficulty: {{ r.grade.grade_name }}] 
-                @ {{ r.location.location_name }}, {{ r.location.state }}
+                <b>{{ r.route_name }}:</b> 
+                {{ r.location.location_name }}, {{ r.location.state }} [{{ r.grade.grade_name }}] 
             </li>
         {% endfor %}
     </ul>

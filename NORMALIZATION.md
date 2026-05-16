@@ -37,3 +37,9 @@ NORMALIZATION.md that contains:
 
     Sends Table:
     send_id (PK), climber_id (FK), route_id (FK), send_date, entry_date
+
+Relationships between tables:
+Climbers_id (one) to send(many) - climbers w multiple routes climbed
+route_id 1 to send many 
+grade_id 1 to route many
+location id one to route many

@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from .models import climber, route, send, location, grade
 from .extensions import db
 from datetime import datetime
+from sqlalchemy import func
 
 main = Blueprint("main", __name__)
 
@@ -14,8 +15,11 @@ def index():
     sends = send.query.order_by(send.send_id.desc()).all()
     locations = location.query.order_by(location.location_id.desc()).all()
     grades = grade.query.order_by(grade.grade_id.desc()).all()
+    totalSends = db.session.query(func.count(send.send_id)).scalar()
+    totalClimbers = db.session.query(func.count(climber.climber_id)).scalar()
+    totalRoutes = db.session.query(func.count(route.route_id)).scalar()
 
-    return render_template("index.html", climbers=climbers, routes=routes, sends=sends, locations=locations, grades=grades)
+    return render_template("index.html", climbers=climbers, routes=routes, sends=sends, locations=locations, grades=grades, totalSends=totalSends, totalClimbers=totalClimbers, totalRoutes=totalRoutes)
 
 #create POST for creating new climber via user input
 @main.route("/climbers/create", methods=["POST"])
@@ -24,10 +28,22 @@ def create_climber():
     email_input = request.form.get("email")
     
     #server-side validation to ensure no "bad data" enters database
+    #validation already there since database schema set up correct but another example if not structured 
     if not full_name_input or not email_input: 
-        return redirect(url_for("main.index")) #fail  
+        print("missing information")
+        return redirect(url_for("main.index"))
+        
+    if "@" not in email_input or "." not in email_input:
+        print("email format is invalid")
+        return redirect(url_for("main.index"))
+    
     try:
-        new_climber = climber(full_name=full_name_input, email=email_input, join_date = datetime.utcNow(), recent_activity = datetime.utcNow())
+        unique = climber.query.filter_by(email=email_input).first()
+        if unique:
+            print("Email address already exists.")
+            return redirect(url_for("main.index"))
+        
+        new_climber = climber(full_name=full_name_input, email=email_input, join_date = datetime.utcnow(), recent_activity = datetime.utcnow())
         db.session.add(new_climber)
         db.session.commit()
     except Exception as e:
@@ -49,13 +65,14 @@ def trackSend():
         #get climbers information to update relational tables for send information
         active_climber = climber.query.get(climber_id)
         
+
         #create send record for new ascent entry
-        new_send = send(climber_id=int(climber_id), route_id=int(route_id), send_date=datetime.utcNow(), entry_date=datetime.utcNow())
+        new_send = send(climber_id=int(climber_id), route_id=int(route_id), send_date=datetime.utcnow(), entry_date=datetime.utcnow())
         db.session.add(new_send)
         
         # need to update the recent activity metadata in the climber table to reflect latest activity
         if active_climber:
-            active_climber.recent_activity = datetime.utcNow()
+            active_climber.recent_activity = datetime.utcnow()
         db.session.commit()
 
     except Exception as e:

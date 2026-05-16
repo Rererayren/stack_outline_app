@@ -5,7 +5,7 @@ Barebones project outline for:
 - Flask backend
 - Relational DB (SQLite by default)
 - SQLAlchemy ORM
-- HTML5/CSS3 frontend with Bootstrap and Jinja2 templates
+- HTML5
 - Git version control
 
 ## Project Structure
@@ -22,6 +22,8 @@ stack_outline_app/
     templates/index.html
   config.py
   run.py
+  ai.md
+  NORMILZATION.md
   requirements.txt
   .env.example
   .gitignore
@@ -47,5 +49,4 @@ stack_outline_app/
 ## Notes
 
 - SQLite is used out of the box via `DATABASE_URL=sqlite:///app.db`.
-- To switch databases, set `DATABASE_URL` (for example, PostgreSQL/MySQL URI) and install the corresponding driver.
-- Tables are auto-created at startup for this minimal starter (`db.create_all()`).
+- Tables are auto-created at startup for this minimal starter (`db.create_all()` for the Grades and Locations tables).
